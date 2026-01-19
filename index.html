@@ -110,6 +110,12 @@
         const GapTicker = () => {
             // Last bulletin mailed: 29 May 2025 11:37 UK (verified)
             const lastBulletinDate = new Date(2025, 4, 29); // Month is 0-indexed, so 4 = May
+
+            // Planned relaunch: Thursday 2 October 2025 (start of Autumn term 2025/26)
+            const plannedRelaunchDate = new Date(2025, 9, 2); // 9 = October
+
+            // Report shared: 3 December 2025
+            const reportSharedDate = new Date(2025, 11, 3); // 11 = December
             
             // Dashboard snapshot shared: 24 November 2025 UK
             const snapshotDate = new Date(2025, 10, 24); // 10 = November
@@ -117,14 +123,14 @@
             // Today's date
             const today = new Date();
             
-            // Days since last bulletin (live count)
-            const totalDays = Math.floor((today - lastBulletinDate) / (1000 * 60 * 60 * 24));
+            // Days since planned relaunch (the honest measure)
+            const voidDays = Math.floor((today - plannedRelaunchDate) / (1000 * 60 * 60 * 24));
             
-            // Days at time of snapshot (24 Nov 2025)
-            const snapshotDays = Math.floor((snapshotDate - lastBulletinDate) / (1000 * 60 * 60 * 24));
+            // Days at time report was shared (3 Dec 2025)
+            const voidDaysAtReport = Math.floor((reportSharedDate - plannedRelaunchDate) / (1000 * 60 * 60 * 24));
             
-            // Days elapsed since snapshot was shared
-            const daysSinceSnapshot = totalDays - snapshotDays;
+            // Days elapsed since report was shared
+            const daysSinceReport = voidDays - voidDaysAtReport;
 
             return (
                 <div className="uob-gradient text-white p-6 rounded-xl shadow-lg mb-8 flex flex-col md:flex-row items-center justify-between border-l-4 border-[#cc074e]">
@@ -134,16 +140,16 @@
                         </div>
                         <div>
                             <h2 className="text-lg font-bold text-white">Service Void Duration</h2>
-                            <p className="text-white/70 text-sm">Time since students last received a curated bulletin</p>
+                            <p className="text-white/70 text-sm">Time since planned Autumn 2025 relaunch (Thu 2 Oct)</p>
                             <p className="text-white/50 text-xs mt-1">
                                 <span className="text-[#08e8de]">Dashboard shared: 24 Nov 2025</span> · Then: {snapshotDays} days · <span className="text-[#fcb045]">+{daysSinceSnapshot} days since</span>
                             </p>
                         </div>
                     </div>
                     <div className="text-center md:text-right">
-                        <span className="text-5xl font-extrabold font-mono tracking-tighter text-white">{totalDays}</span>
+                        <span className="text-5xl font-extrabold font-mono tracking-tighter text-white">{voidDays}</span>
                         <span className="text-xl text-white/70 ml-2">Days</span>
-                        <div className="text-xs text-[#fcb045] mt-1 uppercase tracking-widest font-bold">Status: Critical</div>
+                        <div className="text-xs text-[#fcb045] mt-1 uppercase tracking-widest font-bold">Since Planned Relaunch</div>
                         <div className="text-xs text-white/40 mt-0.5">Live count as of today</div>
                     </div>
                 </div>
