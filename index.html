@@ -108,14 +108,20 @@
         );
 
         const GapTicker = () => {
-            const lastDate = new Date(bulletinData.meta.lastMailed);
-            const today = new Date();
-            const diffTime = Math.abs(today - lastDate);
-            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-            
-            // Original snapshot data
-            const snapshotDate = "24 Nov 2025";
+            // Last bulletin: 3 June 2025 (UK)
+            const lastDate = new Date(2025, 5, 3); // Month is 0-indexed, so 5 = June
+            // Snapshot verified: 24 November 2025 (UK) - showed 231 days at that time
+            const snapshotDate = new Date(2025, 10, 24); // 10 = November
             const snapshotDays = 231;
+            
+            // Today's date
+            const today = new Date();
+            
+            // Calculate current days since last bulletin
+            const diffTime = Math.abs(today - lastDate);
+            const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+            
+            // Days elapsed since snapshot was taken
             const daysSinceSnapshot = diffDays - snapshotDays;
 
             return (
@@ -128,7 +134,7 @@
                             <h2 className="text-lg font-bold text-white">Service Void Duration</h2>
                             <p className="text-white/70 text-sm">Time since students last received a curated bulletin</p>
                             <p className="text-white/50 text-xs mt-1">
-                                <span className="text-[#08e8de]">Snapshot verified: {snapshotDate}</span> · Then: {snapshotDays} days · <span className="text-[#fcb045]">+{daysSinceSnapshot} days since</span>
+                                <span className="text-[#08e8de]">Snapshot verified: 24 Nov 2025</span> · Then: {snapshotDays} days · <span className="text-[#fcb045]">+{daysSinceSnapshot} days since</span>
                             </p>
                         </div>
                     </div>
