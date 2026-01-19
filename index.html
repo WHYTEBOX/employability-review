@@ -150,6 +150,78 @@
             );
         };
 
+
+        const ProjectedImpact = () => {
+            // Historical data: 56,073 clicks over ~50 bi-weekly term-time issues = ~1,121 per issue
+            const interventionsPerIssue = 1121;
+            
+            // Key dates
+            const lastBulletinDate = new Date(2025, 4, 29); // 29 May 2025
+            const reportSharedDate = new Date(2025, 11, 3); // 3 Dec 2025
+            const today = new Date();
+            
+            // Calculate missed term-time issues since May 2025
+            // Autumn 2025: Oct-Dec = ~5-6 bi-weekly issues
+            // Spring 2026: Jan onwards = accumulating
+            
+            // Get current month/year for dynamic calculation
+            const currentMonth = today.getMonth(); // 0-indexed
+            const currentYear = today.getFullYear();
+            
+            // Estimate missed issues based on academic calendar
+            // Autumn term 2025 (Oct-Dec): ~6 issues
+            // Spring term 2026 (Jan-Mar): ~1 issue per 2 weeks from early Jan
+            let missedIssues = 6; // Autumn 2025 baseline
+            
+            // Add Spring 2026 issues (Jan onwards)
+            if (currentYear >= 2026 && currentMonth >= 0) {
+                const weeksIntoSpringTerm = Math.floor((today - new Date(2026, 0, 6)) / (1000 * 60 * 60 * 24 * 7));
+                const springIssues = Math.max(0, Math.floor(weeksIntoSpringTerm / 2) + 1);
+                missedIssues += Math.min(springIssues, 6); // Cap at 6 for spring term
+            }
+            
+            // Issues missed since report shared (3 Dec 2025)
+            // Dec 2025: ~1 issue remaining, Jan 2026: accumulating
+            let issuesSinceReport = 1; // Dec remainder
+            if (currentYear >= 2026 && currentMonth >= 0) {
+                const weeksIntoSpringTerm = Math.floor((today - new Date(2026, 0, 6)) / (1000 * 60 * 60 * 24 * 7));
+                issuesSinceReport += Math.max(0, Math.floor(weeksIntoSpringTerm / 2) + 1);
+            }
+            
+            const totalForegone = missedIssues * interventionsPerIssue;
+            const foregoneSinceReport = issuesSinceReport * interventionsPerIssue;
+            
+            return (
+                <div className="bg-white rounded-xl shadow-sm border border-[#cc074e]/30 mb-8 overflow-hidden">
+                    <div className="bg-[#cc074e]/10 px-6 py-3 border-b border-[#cc074e]/20">
+                        <h3 className="text-sm font-bold text-[#cc074e] uppercase tracking-wide flex items-center gap-2">
+                            <Icon name="AlertTriangle" size={16} />
+                            Projected Impact: Foregone Student Interventions
+                        </h3>
+                    </div>
+                    <div className="p-6">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                            <div className="bg-gradient-to-br from-[#263262]/5 to-[#572a79]/5 p-5 rounded-lg border border-[#263262]/10">
+                                <div className="text-xs font-bold text-[#263262]/60 uppercase mb-1">Total Service Void</div>
+                                <div className="text-3xl font-extrabold text-[#263262]">~{totalForegone.toLocaleString()}</div>
+                                <div className="text-sm text-[#2d3232]/70 mt-1">Est. foregone interventions since May 2025</div>
+                                <div className="text-xs text-[#833ab4] mt-2 font-medium">~{missedIssues} term-time issues missed</div>
+                            </div>
+                            <div className="bg-gradient-to-br from-[#cc074e]/5 to-[#ee5625]/5 p-5 rounded-lg border border-[#cc074e]/20">
+                                <div className="text-xs font-bold text-[#cc074e]/80 uppercase mb-1">Since Report Shared</div>
+                                <div className="text-3xl font-extrabold text-[#cc074e]">~{foregoneSinceReport.toLocaleString()}</div>
+                                <div className="text-sm text-[#2d3232]/70 mt-1">Additional interventions foregone since 3 Dec 2025</div>
+                                <div className="text-xs text-[#ee5625] mt-2 font-medium">~{issuesSinceReport} issues since report</div>
+                            </div>
+                        </div>
+                        <div className="bg-[#fcb045]/10 border border-[#fcb045]/30 rounded-lg p-4 text-sm text-[#263262]">
+                            <strong className="text-[#263262]">Methodology Note:</strong> 
+                            <span className="text-[#2d3232]/80"> The Bulletin operated bi-weekly during UK university term times only (~14-15 issues per academic year). Projections are based on the historical average of <strong>~1,121 student interventions per issue</strong> over 3.5 years of service (56,073 total clicks  ~50 issues). This conservative estimate accounts for the actual operational cadence, not a straight-line daily rate.</span>
+                        </div>
+                    </div>
+                </div>
+            );
+        };
         const CompoundingChart = () => {
             const data = [
                 { name: 'Dec 21', clicks: 0 },
@@ -543,6 +615,7 @@
                         {/* 1. DASHBOARD */}
                         <section className="mb-12 animate-in fade-in slide-in-from-bottom-4 duration-700">
                             <GapTicker />
+                            <ProjectedImpact />
                             <div className="mb-8">
                                 <div className="flex items-center justify-between mb-6">
                                     <h2 className="text-xl font-extrabold text-[#263262]">Historical Performance Data</h2>
